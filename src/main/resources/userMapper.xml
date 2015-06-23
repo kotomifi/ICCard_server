@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.whut.mapper.UserMapper">
+
+    <sql id="user_fields">
+        id,userName,password,workId,sex,phoneNum,email,name
+    </sql>
+
+    <resultMap id="userResultMap" type="User">
+        <result property="id" column="id" />
+        <result property="userName" column="userName" />
+        <result property="password" column="password" />
+        <result property="workId" column="workId" />
+        <result property="sex" column="sex" />
+        <result property="phoneNum" column="phoneNum" />
+        <result property="email" column="email" />
+        <result property="name" column="name" />
+    </resultMap>
+
+    <select id="findById" parameterType="map" resultType="User">
+        select
+        <include refid="user_fields" />
+        from user where id=#{id}
+    </select>
+
+    <select id="getUsers" parameterType="map" resultMap="userResultMap">
+        SELECT
+        <include refid="user_fields" />
+        FROM user
+    </select>
+
+    <select id="findByName" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT
+        <include refid="user_fields" />
+        FROM user WHERE name=#{name}
+    </select>
+
+    <select id="findByUserName" parameterType="java.lang.String" resultType="User">
+        SELECT
+        <include refid="user_fields" />
+        FROM user WHERE userName=#{userName}
+    </select>
+
+    <select id="getIdByName" parameterType="java.lang.String" resultType="java.lang.Long">
+        SELECT
+        id
+        FROM user WHERE userName=#{userName}
+    </select>
+
+    <delete id="delete" parameterType="User">
+        DELETE FROM user
+        <where>
+            <if test="id != null">id = #{id}</if>
+        </where>
+    </delete>
+
+    <insert id="add" parameterType="User"  keyProperty="id"
+            useGeneratedKeys="true">
+        INSERT INTO
+        user(
+        <include refid="user_fields" />
+        )
+        VALUES (#{id}, #{userName}, #{password},#{workId},#{sex},#{phoneNum},#{email},#{name});
+        <selectKey resultType="long" keyProperty="id">
+            select
+            LAST_INSERT_ID() as id
+        </selectKey>
+    </insert>
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这块等于dao接口的实现 namespace必须和接口的类路径一样 -->
+<mapper namespace="org.whut.mapper.InstallationMapper">
+    <sql id="installation_fields">
+        id,address,userName,postDate,completeDate,isComplete,uploadFlag,barCode,indication
+    </sql>
+
+    <resultMap id="insatllationResultMap" type="Installation">
+        <id property="id" column="id" />
+        <result property="address" column="address" />
+        <result property="userName" column="userName" />
+        <result property="postDate" column="postDate" />
+        <result property="completeDate" column="completeDate" />
+        <result property="isCompletee" column="isCompletee" />
+        <result property="uploadFlag" column="uploadFlag" />
+        <result property="barCode" column="barCode" />
+        <result property="indication" column="indication" />
+    </resultMap>
+
+    <select id="findById" parameterType="map" resultType="Installation">
+        select
+        <include refid="installation_fields"/>
+        from installation where id=#{id}
+    </select>
+
+    <select id="getInstallations" parameterType="map" resultMap="insatllationResultMap">
+        SELECT
+        <include refid="installation_fields" />
+        FROM installation
+    </select>
+
+    <select id="findByUserName" parameterType="map" resultMap="insatllationResultMap">
+        select
+        <include refid="installation_fields"/>
+        from installation
+        <where>
+            <if test="userName!=null">userName=#{userName}</if>
+            <if test="isComplete!=null">AND isComplete=#{isComplete}</if>
+            and completeDate is null
+        </where>
+
+    </select>
+
+    <update id="update" parameterType="Installation">
+        UPDATE installation
+        <set>
+            <if test="postDate!=null">postDate=#{postDate},</if>
+            <if test="isComplete!=null">isComplete=#{isComplete},</if>
+            <if test="uploadFlag!=null">uploadFlag=#{uploadFlag},</if>
+            <if test="barCode!=null">barCode=#{barCode},</if>
+            <if test="indication!=null">indication=#{indication},</if>
+            <if test="completeDate!=null">completeDate=#{completeDate}</if>
+        </set>
+        where id=#{id};
+    </update>
+
+</mapper>

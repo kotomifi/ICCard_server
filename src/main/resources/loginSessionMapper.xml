@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.whut.mapper.LoginSessionMapper">
+
+    <sql id="loginSession_fields">
+        id,JSESSIONID,userName,ticket
+    </sql>
+
+    <resultMap id="loginSessionResultMap" type="LoginSession">
+        <result property="id" column="id" />
+        <result property="JSESSIONID" column="JSESSIONID" />
+        <result property="userName" column="userName" />
+        <result property="ticket" column="ticket" />
+    </resultMap>
+
+    <select id="findByTicket" parameterType="java.lang.String" resultType="LoginSession">
+        select
+        <include refid="loginSession_fields" />
+        from loginsession where ticket=#{ticket}
+    </select>
+
+    <select id="findBySessionId" parameterType="java.lang.String" resultType="LoginSession">
+        SELECT
+        <include refid="loginSession_fields" />
+        FROM loginsession where JSESSIONID=#{JSESSIONID}
+    </select>
+
+    <insert id="add" parameterType="LoginSession">
+        INSERT INTO
+        loginsession(
+        <include refid="loginSession_fields" />
+        )
+        VALUES (#{id},#{JSESSIONID}, #{userName},#{ticket});
+    </insert>
+
+
+    <delete id="delete" parameterType="LoginSession">
+        DELETE FROM loginsession
+        <where>
+            <if test="id != null">id = #{id}</if>
+        </where>
+    </delete>
+
+</mapper>

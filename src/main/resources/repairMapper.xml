@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--这块等于dao接口的实现 namespace必须和接口的类路径一样 -->
+<mapper namespace="org.whut.mapper.RepairMapper">
+    <sql id="repair_fields">
+        id,type,description,userName,oldBarCode,oldIndication,newBarCode,newIndication,
+        postDate,completeDate,address,isUpdate,uploadFlag,isComplete
+    </sql>
+
+    <resultMap id="repairResultMap" type="Repair">
+        <id property="id" column="id" />
+        <result property="type" column="type" />
+        <result property="description" column="description" />
+        <result property="userName" column="userName" />
+        <result property="oldBarCode" column="oldBarCode" />
+        <result property="oldIndication" column="oldIndication" />
+        <result property="newBarCode" column="newBarCode" />
+        <result property="newIndication" column="newIndication" />
+        <result property="postDate" column="postDate" />
+        <result property="completeDate" column="completeDate" />
+        <result property="address" column="address" />
+        <result property="isUpdate" column="isUpdate" />
+        <result property="uploadFlag" column="uploadFlag" />
+        <result property="isComplete" column="isComplete" />
+    </resultMap>
+
+    <select id="findById" parameterType="map" resultType="Repair">
+        select
+        <include refid="repair_fields"/>
+        from repair where id=#{id}
+    </select>
+
+    <select id="findByUser" parameterType="map" resultMap="repairResultMap">
+        SELECT
+        <include refid="repair_fields" />
+        FROM repair
+        <where>
+            <if test="userName!=null">userName=#{userName}</if>
+            <if test="isComplete!=null">AND isComplete=#{isComplete}</if>
+            and completeDate is null
+        </where>
+    </select>
+
+    <select id="getRepairs" parameterType="map" resultMap="repairResultMap">
+        SELECT
+        <include refid="repair_fields" />
+        FROM repair
+    </select>
+
+    <insert id="add" parameterType="Repair">
+        INSERT INTO
+        repair(
+        <include refid="repair_fields" />
+        )
+        VALUES (#{id}, #{type}, #{description}, #{userName}, #{oldBarCode}, #{oldIndication},
+        #{newBarCode}, #{newIndication}, #{postDate}, #{completeDate}, #{address},
+        #{isUpdate}, #{uploadFlag}, #{isComplete})
+    </insert>
+
+
+    <update id="update" parameterType="Repair">
+        UPDATE repair
+        <set>
+            <if test="type!=null">type=#{type},</if>
+            <if test="description!=null">description=#{description},</if>
+            <if test="oldBarCode!=null">oldBarCode=#{oldBarCode},</if>
+            <if test="oldIndication!=null">oldIndication=#{oldIndication},</if>
+            <if test="newBarCode!=null">newBarCode=#{newBarCode},</if>
+            <if test="newIndication!=null">newIndication=#{newIndication},</if>
+            <if test="postDate!=null">postDate=#{postDate},</if>
+            <if test="completeDate!=null">completeDate=#{completeDate},</if>
+            <if test="address!=null">address=#{address},</if>
+            <if test="isUpdate!=null">isUpdate=#{isUpdate},</if>
+            <if test="uploadFlag!=null">uploadFlag=#{uploadFlag},</if>
+            <if test="isComplete!=null">isComplete=#{isComplete}</if>
+        </set>
+        where id=#{id};
+    </update>
+</mapper>
